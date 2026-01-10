@@ -1,6 +1,15 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using Alura.Adopet.Console;
+using Alura.Adopet.Console.Comandos;
+using Alura.Adopet.Console.Models;
+
+Dictionary<string,IComando > comandosDoSistema = new Dictionary<string, IComando>()
+{
+    {"import", new Import() },
+    {"help", new Help() },
+    {"show", new Show() },
+    {"list", new List() }
+};
 
 // na linha abaixo cria-se uma instância de HttpClient para consumir API Adopet.
 HttpClient client = ConfiguraHttpClient("http://localhost:5057");
@@ -8,28 +17,38 @@ Console.ForegroundColor = ConsoleColor.Green;
 try
 {
     string comando = args[0].Trim();
-    switch (comando)
+    if(comandosDoSistema.ContainsKey(comando))
     {
-        case "import":
-            var import = new Import();
-            await import.ImportacaoArquivoPetAsync(caminhoDoArquivoDeImportacao: args[1]);
-            break;
-        case "help":
-            var help = new Help();
-            help.ExibeDocumentacao(parametros: args);
-            break;
-        case "show":
-            var show = new Show();
-            show.ExibeConteudoArquivo(caminhoDoArquivoASerExibido: args[1]);
-            break;
-        case "list":
-            var list = new List();
-            await list.ListaDadosPetsDaAPIAsync();
-            break;
-        default:
-            Console.WriteLine("Comando inválido!");
-            break;
+        IComando? cmd = comandosDoSistema[comando];
+        await cmd.ExecutarAsync(args);
     }
+    else
+    {
+        Console.WriteLine("Comando inválido!");
+    }
+    
+    //switch (comando)
+    //{
+    //    case "import":
+    //        var import = new Import();
+    //        await import.ExecutarAsync(args);
+    //        break;
+    //    case "help":
+    //        var help = new Help();
+    //        help.ExecutarAsync(args);
+    //        break;
+    //    case "show":
+    //        var show = new Show();
+    //        show.ExecutarAsync(args);
+    //        break;
+    //    case "list":
+    //        var list = new List();
+    //        await list.ListaDadosPetsDaAPIAsync();
+    //        break;
+    //    default:
+    //        Console.WriteLine("Comando inválido!");
+    //        break;
+    //}
 }
 catch (Exception ex)
 {

@@ -1,12 +1,14 @@
-﻿using System;
+﻿using Alura.Adopet.Console.Models;
+using Alura.Adopet.Console.Utils;
+using System;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 
-namespace Alura.Adopet.Console
+namespace Alura.Adopet.Console.Comandos
 {
-    public class Import
+    public class Import : IComando
     {
         HttpClient client;
         
@@ -14,7 +16,7 @@ namespace Alura.Adopet.Console
         {
             this.client = ConfiguraHttpClient("http://localhost:5057");
         }
-        public async Task ImportacaoArquivoPetAsync(string caminhoDoArquivoDeImportacao)
+        private async Task ImportacaoArquivoPetAsync(string caminhoDoArquivoDeImportacao)
         {
             
             var leitor = new LeitorDeArquivo();
@@ -51,6 +53,11 @@ namespace Alura.Adopet.Console
                 new MediaTypeWithQualityHeaderValue("application/json"));
             _client.BaseAddress = new Uri(url);
             return _client;
+        }
+
+        public async Task ExecutarAsync(string[] args)
+        {
+            await this.ImportacaoArquivoPetAsync(args[0]);
         }
     }
 }

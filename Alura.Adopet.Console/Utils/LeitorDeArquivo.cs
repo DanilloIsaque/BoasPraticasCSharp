@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Alura.Adopet.Console.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Alura.Adopet.Console
+namespace Alura.Adopet.Console.Utils
 {
     internal class LeitorDeArquivo
     {
