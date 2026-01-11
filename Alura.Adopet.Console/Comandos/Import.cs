@@ -1,12 +1,14 @@
-﻿using System;
+﻿using Alura.Adopet.Console.Models;
+using Alura.Adopet.Console.Utils;
+using System;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 
-namespace Alura.Adopet.Console
+namespace Alura.Adopet.Console.Comandos
 {
-    public class Import
+    public class Import : IComando
     {
         HttpClient client;
         
@@ -14,28 +16,14 @@ namespace Alura.Adopet.Console
         {
             this.client = ConfiguraHttpClient("http://localhost:5057");
         }
-        public async Task ImportacaoArquivoPetAsync(string caminhoDoArquivoDeImportacao)
+        private async Task ImportacaoArquivoPetAsync(string caminhoDoArquivoDeImportacao)
         {
-            List<Pet> listaDePet = new List<Pet>();
-
-            using (StreamReader sr = new StreamReader(caminhoDoArquivoDeImportacao))
-            {
-                while (!sr.EndOfStream)
-                {
-                    // separa linha usando ponto e vírgula
-                    string[] propriedades = sr.ReadLine().Split(';');
-                    // cria objeto Pet a partir da separação
-                    Pet pet = new Pet(Guid.Parse(propriedades[0]),
-                      propriedades[1],
-                      TipoPet.Cachorro
-                     );
-
-                    System.Console.WriteLine(pet);
-                    listaDePet.Add(pet);
-                }
-            }
+            
+            var leitor = new LeitorDeArquivo();
+            List<Pet> listaDePet = leitor.RealizaLeitura(caminhoDoArquivoDeImportacao);
             foreach (var pet in listaDePet)
             {
+                System.Console.WriteLine(pet);
                 try
                 {
                     var resposta = await CreatePetAsync(pet);
@@ -65,6 +53,11 @@ namespace Alura.Adopet.Console
                 new MediaTypeWithQualityHeaderValue("application/json"));
             _client.BaseAddress = new Uri(url);
             return _client;
+        }
+
+        public async Task ExecutarAsync(string[] args)
+        {
+            await this.ImportacaoArquivoPetAsync(args[0]);
         }
     }
 }
