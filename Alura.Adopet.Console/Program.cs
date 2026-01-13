@@ -1,14 +1,17 @@
-﻿using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using Alura.Adopet.Console.Comandos;
+﻿using Alura.Adopet.Console.Comandos;
 using Alura.Adopet.Console.Models;
+using Alura.Adopet.Console.Services;
+using Alura.Adopet.Console.Servicos;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
+var httpClientPet = new HttpClientPet(new AdopetAPIClientFactory().CreateClient("adopet"));
 Dictionary<string,IComando > comandosDoSistema = new Dictionary<string, IComando>()
 {
-    {"import", new Import() },
+    {"import", new Import(httpClientPet) },
     {"help", new Help() },
     {"show", new Show() },
-    {"list", new List() }
+    {"list", new List(httpClientPet) }
 };
 
 // na linha abaixo cria-se uma instância de HttpClient para consumir API Adopet.

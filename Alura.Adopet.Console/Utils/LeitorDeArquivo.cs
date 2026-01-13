@@ -7,10 +7,20 @@ using System.Threading.Tasks;
 
 namespace Alura.Adopet.Console.Utils
 {
-    internal class LeitorDeArquivo
+    public class LeitorDeArquivo
     {
-        public List<Pet> RealizaLeitura(string caminhoDoArquivoASerLido)
+        private string caminhoDoArquivoASerLido;
+        public LeitorDeArquivo(string caminhoDoArquivoASerLido)
         {
+            this.caminhoDoArquivoASerLido = caminhoDoArquivoASerLido;
+        }
+
+        public virtual List<Pet> RealizaLeitura()
+        {
+            if (string.IsNullOrEmpty(this.caminhoDoArquivoASerLido))
+            {
+                return null;
+            }
             List<Pet> listaDePet = new List<Pet>();
             using (StreamReader sr = new StreamReader(caminhoDoArquivoASerLido))
             {

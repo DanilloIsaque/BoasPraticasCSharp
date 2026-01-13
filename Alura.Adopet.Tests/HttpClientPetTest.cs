@@ -1,4 +1,5 @@
 ﻿using Alura.Adopet.Console.Services;
+using Moq;
 
 namespace Alura.Adopet.Tests
 {
@@ -19,8 +20,10 @@ namespace Alura.Adopet.Tests
         [Fact]
         public async Task QuandoApiForaDeveRetornarUmaExcecao()
         {
+            var httpClient = new Mock<HttpClient>(MockBehavior.Default);
+            httpClient.Object.BaseAddress = new Uri("http://localhost:5057");
             // Arrange configuracao do projeto
-            var clientPet = new HttpClientPet();
+            var clientPet = new HttpClientPet(httpClient.Object);
             // Act + assert
             await Assert.ThrowsAnyAsync<Exception>(() => clientPet.ListPetsAsync());
         }
